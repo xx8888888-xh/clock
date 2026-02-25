@@ -2,7 +2,7 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ main, master ]
+分支: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -57,11 +57,29 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
+    - name: Check project files
+      run: |
+        echo "=== Project Structure ==="
+        ls -la
+        echo "=== Checking main.py ==="
+        head -20 main.py
+        echo "=== Checking icon.png ==="
+        ls -la icon.png
+        echo "=== Checking buildozer.spec ==="
+        head -30 buildozer.spec
+
     - name: Build APK
       run: |
         export BUILDOZER_WARN_ON_ROOT=0
-        buildozer android debug
+        buildozer android debug 2>&1 | tee build.log
       timeout-minutes: 60
+
+    - name: Upload build log on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-log
+        path: build.log
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
