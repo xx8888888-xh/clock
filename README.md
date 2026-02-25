@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/25534219/README.md)
 # 安卓桌面宠物闹钟 - 项目总结
 
 ## 📋 项目概述
