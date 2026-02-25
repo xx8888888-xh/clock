@@ -119,7 +119,21 @@ jobs:
         export BUILDOZER_WARN_ON_ROOT=0
         # 让 Buildozer 自动处理 SDK 和 NDK 路径
         # 移除可能导致冲突的环境变量
-        buildozer android debug
+        # 详细日志输出，保存到本地 log 文件
+        buildozer android debug > build.log 2>&1 || true
+        # 显示最后 500 行日志，便于调试
+        tail -500 build.log
+        # 检查构建是否成功
+        if [ -f "bin/*.apk" ]; then
+          echo "Build successful!"
+          exit 0
+        else
+          echo "Build failed!"
+          # 上传错误日志到云端
+          echo "Uploading error log..."
+          cat build.log
+          exit 1
+        fi
       timeout-minutes: 90
 
     - name: Check build output
@@ -137,6 +151,14 @@ jobs:
         name: petalarm-apk
         path: bin/*.apk
         if-no-files-found: error
+
+    - name: Upload Build Log
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-log
+        path: build.log
+        if-no-files-found: warn
 
     - name: Create Release
       if: success() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
