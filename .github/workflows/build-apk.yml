@@ -1,23 +1,23 @@
-名字: Build Android APK
+name: Build Android APK
 
 on:
   push:
-    分支: [ main, master ]
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v3
-    
-    - 名字: Set up Python
+
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-    
-    - 名字: Install system dependencies
+
+    - name: Install system dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y \
@@ -41,13 +41,13 @@ jobs:
           automake \
           libtool \
           pkg-config
-    
-    - 名字: Install Python dependencies
+
+    - name: Install Python dependencies
       run: |
         pip install --upgrade pip
         pip install buildozer
-    
-    - 名字: Cache Buildozer dependencies
+
+    - name: Cache Buildozer dependencies
       uses: actions/cache@v3
       with:
         path: |
@@ -56,45 +56,45 @@ jobs:
         key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
-    
-    - 名字: Build APK
+
+    - name: Build APK
       run: |
         export BUILDOZER_WARN_ON_ROOT=0
         buildozer android debug
       timeout-minutes: 60
-    
-    - 名字: Upload APK
+
+    - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        名字: petalarm-apk
+        name: petalarm-apk
         path: bin/*.apk
-    
-    - 名字: Create Release
+
+    - name: Create Release
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       uses: softprops/action-gh-release@v1
       with:
         files: bin/*.apk
         tag_name: v3.0.${{ github.run_number }}
-        名字: 宠物闹钟 v3.0.${{ github.run_number }}
-        内容: |
-          ## 宠物闹钟 Android APK
-          
-          ### 版本信息
-          - 版本: v3.0.${{ github.run_number }}
-          - 修复: 所有已知bug
-          - 功能: 悬浮宠物、闹钟、倒计时
-          
-          ### 安装说明
-          1. 下载 APK 文件
-          2. 在 Android 设备上安装
-          3. 授予悬浮窗权限
-          
-          ### 功能特点
-          - 🐾 可爱的悬浮宠物
-          - ⏰ 智能闹钟提醒
-          - ⏱️ 倒计时功能
-          - 😴 贪睡模式
-          - 📳 振动提醒
-          - 🔔 声音提醒
+        name: Pet Alarm Clock v3.0.${{ github.run_number }}
+        body: |
+          ## Pet Alarm Clock Android APK
+
+          ### Version Info
+          - Version: v3.0.${{ github.run_number }}
+          - Fixes: All known bugs
+          - Features: Floating pet, alarm, countdown
+
+          ### Installation
+          1. Download APK file
+          2. Install on Android device
+          3. Grant overlay permission
+
+          ### Features
+          - Floating pet
+          - Smart alarm
+          - Countdown timer
+          - Snooze mode
+          - Vibration alert
+          - Sound alert
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
