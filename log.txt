@@ -1,0 +1,393 @@
+h.ErrorReturnCode_1: 
+23474
+  RAN: /opt/hostedtoolcache/Python/3.10.19/x64/bin/python3 '-cimport sys; from Cython.Compiler.Main import setuptools_main; sys.exit(setuptools_main());' ./jnius/jnius.pyx
+23475
+  STDOUT:
+23476
+warning: jnius/jnius.pyx:102:0: The 'IF' statement is deprecated and will be removed in a future Cython version. Consider using runtime conditions or C macros instead. See https://github.com/cython/cython/issues/4310
+23477
+Error compiling Cython file:
+23478
+------------------------------------------------------------
+23479
+...
+23480
+            score += 10
+23481
+            continue
+23482
+        if r == 'S' or r == 'I':
+23483
+            if isinstance(arg, int) or (
+23484
+                    (isinstance(arg, long) and arg < 2147483648)):
+23485
+                                     ^
+23486
+------------------------------------------------------------
+23487
+jnius/jnius_utils.pxi:323:37: undeclared name not builtin: long
+23488
+  STDERR:
+23489
+Traceback (most recent call last):
+23490
+  File "/opt/hostedtoolcache/Python/3.10.19/x64/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+23491
+    return _run_code(code, main_globals, None,
+23492
+  File "/opt/hostedtoolcache/Python/3.10.19/x64/lib/python3.10/runpy.py", line 86, in _run_code
+23493
+    exec(code, run_globals)
+23494
+  File "/home/runner/work/clock/clock/.buildozer/android/platform/python-for-android/pythonforandroid/toolchain.py", line 1256, in <module>
+23495
+    main()
+23496
+  File "/home/runner/work/clock/clock/.buildozer/android/platform/python-for-android/pythonforandroid/entrypoints.py", line 18, in main
+23497
+    ToolchainCL()
+23498
+  File "/home/runner/work/clock/clock/.buildozer/android/platform/python-for-android/pythonforandroid/toolchain.py", line 685, in __init__
+23499
+    getattr(self, command)(args)
+23500
+  File "/home/runner/work/clock/clock/.buildozer/android/platform/python-for-android/pythonforandroid/toolchain.py", line 104, in wrapper_func
+23501
+    build_dist_from_args(ctx, dist, args)
+23502
+  File "/home/runner/work/clock/clock/.buildozer/android/platform/python-for-android/pythonforandroid/toolchain.py", line 163, in build_dist_from_args
+23503
+    build_recipes(build_order, python_modules, ctx,
+23504
+  File "/home/runner/work/clock/clock/.buildozer/android/platform/python-for-android/pythonforandroid/build.py", line 504, in build_recipes
+23505
+    recipe.build_arch(arch)
+23506
+  File "/home/runner/work/clock/clock/.buildozer/android/platform/python-for-android/pythonforandroid/recipe.py", line 1031, in build_arch
+23507
+    self.build_cython_components(arch)
+23508
+  File "/home/runner/work/clock/clock/.buildozer/android/platform/python-for-android/pythonforandroid/recipe.py", line 1056, in build_cython_components
+23509
+    self.cythonize_build(env=env)
+23510
+  File "/home/runner/work/clock/clock/.buildozer/android/platform/python-for-android/pythonforandroid/recipe.py", line 1104, in cythonize_build
+23511
+    self.cythonize_file(env, build_dir, join(root, filename))
+23512
+  File "/home/runner/work/clock/clock/.buildozer/android/platform/python-for-android/pythonforandroid/recipe.py", line 1093, in cythonize_file
+23513
+    shprint(python_command, "-c"
+23514
+  File "/home/runner/work/clock/clock/.buildozer/android/platform/python-for-android/pythonforandroid/logger.py", line 167, in shprint
+23515
+    for line in output:
+23516
+  File "/home/runner/.local/lib/python3.10/site-packages/sh.py", line 915, in next
+23517
+    self.wait()
+23518
+  File "/home/runner/.local/lib/python3.10/site-packages/sh.py", line 845, in wait
+23519
+    self.handle_command_exit_code(exit_code)
+23520
+  File "/home/runner/.local/lib/python3.10/site-packages/sh.py", line 869, in handle_command_exit_code
+23521
+    raise exc
+23522
+sh.ErrorReturnCode_1: 
+23523
+  RAN: /opt/hostedtoolcache/Python/3.10.19/x64/bin/python3 '-cimport sys; from Cython.Compiler.Main import setuptools_main; sys.exit(setuptools_main());' ./jnius/jnius.pyx
+23524
+  STDOUT:
+23525
+warning: jnius/jnius.pyx:102:0: The 'IF' statement is deprecated and will be removed in a future Cython version. Consider using runtime conditions or C macros instead. See https://github.com/cython/cython/issues/4310
+23526
+Error compiling Cython file:
+23527
+------------------------------------------------------------
+23528
+...
+23529
+            score += 10
+23530
+            continue
+23531
+        if r == 'S' or r == 'I':
+23532
+            if isinstance(arg, int) or (
+23533
+                    (isinstance(arg, long) and arg < 2147483648)):
+23534
+                                     ^
+23535
+------------------------------------------------------------
+23536
+jnius/jnius_utils.pxi:323:37: undeclared name not builtin: long
+23537
+  STDERR:
+23538
+# Command failed: ['/opt/hostedtoolcache/Python/3.10.19/x64/bin/python', '-m', 'pythonforandroid.toolchain', 'create', '--dist_name=petalarm', '--bootstrap=sdl2', '--requirements=python3,kivy==2.3.0,plyer,pillow,cython', '--arch=armeabi-v7a', '--arch=arm64-v8a', '--copy-libs', '--color=always', '--storage-dir=/home/runner/work/clock/clock/.buildozer/android/platform/build-armeabi-v7a_arm64-v8a', '--ndk-api=21', '--ignore-setup-py', '--debug']
+23539
+# ENVIRONMENT:
+23540
+#     SHELL = '/bin/bash'
+23541
+#     SELENIUM_JAR_PATH = '/usr/share/java/selenium-server.jar'
+23542
+#     CONDA = '/usr/share/miniconda'
+23543
+#     GITHUB_WORKSPACE = '/home/runner/work/clock/clock'
+23544
+#     JAVA_HOME_11_X64 = '/usr/lib/jvm/temurin-11-jdk-amd64'
+23545
+#     JAVA_HOME_25_X64 = '/usr/lib/jvm/temurin-25-jdk-amd64'
+23546
+#     PKG_CONFIG_PATH = '/opt/hostedtoolcache/Python/3.10.19/x64/lib/pkgconfig'
+23547
+#     GITHUB_PATH = '/home/runner/work/_temp/_runner_file_commands/add_path_0e483f7e-6354-4df0-a528-1761bd30268b'
+23548
+#     GITHUB_ACTION = '__run_7'
+23549
+#     JAVA_HOME = '/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.18-8/x64'
+23550
+#     GITHUB_RUN_NUMBER = '13'
+23551
+#     RUNNER_NAME = 'GitHub Actions 1000000010'
+23552
+#     GRADLE_HOME = '/usr/share/gradle-9.3.1'
+23553
+#     GITHUB_REPOSITORY_OWNER_ID = '226655973'
+23554
+#     ACTIONS_RUNNER_ACTION_ARCHIVE_CACHE = '/opt/actionarchivecache'
+23555
+#     XDG_CONFIG_HOME = '/home/runner/.config'
+23556
+#     Python_ROOT_DIR = '/opt/hostedtoolcache/Python/3.10.19/x64'
+23557
+#     DOTNET_SKIP_FIRST_TIME_EXPERIENCE = '1'
+23558
+#     ANT_HOME = '/usr/share/ant'
+23574
+#     JAVA_HOME_8_X64 = '/usr/lib/jvm/temurin-8-jdk-amd64'
+23575
+#     GITHUB_TRIGGERING_ACTOR = 'xx8888888-xh'
+23576
+#     pythonLocation = '/opt/hostedtoolcache/Python/3.10.19/x64'
+23577
+#     GITHUB_REF_TYPE = 'branch'
+23578
+#     HOMEBREW_CLEANUP_PERIODIC_FULL_DAYS = '3650'
+23579
+#     ANDROID_NDK = '/usr/local/lib/android/sdk/ndk/27.3.13750724'
+23580
+#     BOOTSTRAP_HASKELL_NONINTERACTIVE = '1'
+23581
+#     PWD = '/home/runner/work/clock/clock'
+23582
+#     PIPX_BIN_DIR = '/opt/pipx_bin'
+23583
+#     LOGNAME = 'runner'
+23584
+#     GITHUB_REPOSITORY_ID = '1166212769'
+23585
+#     GITHUB_ACTIONS = 'true'
+23586
+#     USE_BAZEL_FALLBACK_VERSION = 'silent:'
+23587
+#     ANDROID_NDK_LATEST_HOME = '/usr/local/lib/android/sdk/ndk/29.0.14206865'
+23588
+#     SYSTEMD_EXEC_PID = '1782'
+23589
+#     GITHUB_SHA = '870da70640751fa6e427f0ff66b0175bfedfc53d'
+23590
+#     GITHUB_WORKFLOW_REF = 'xx8888888-xh/clock/.github/workflows/build-apk.yml@refs/heads/main'
+23591
+#     POWERSHELL_DISTRIBUTION_CHANNEL = 'GitHub-Actions-ubuntu22'
+23592
+#     RUNNER_ENVIRONMENT = 'github-hosted'
+23593
+#     DOTNET_MULTILEVEL_LOOKUP = '0'
+23594
+#     GITHUB_REF = 'refs/heads/main'
+23595
+#     RUNNER_OS = 'Linux'
+23596
+#     GITHUB_REF_PROTECTED = 'false'
+23597
+#     HOME = '/home/runner'
+23598
+#     GITHUB_API_URL = 'https://api.github.com'
+23599
+#     LANG = 'C.UTF-8'
+23600
+#     GOROOT_1_25_X64 = '/opt/hostedtoolcache/go/1.25.6/x64'
+23601
+#     RUNNER_TRACKING_ID = 'github_b4556a54-335b-4a26-85f6-4081cc72a444'
+23602
+#     RUNNER_ARCH = 'X64'
+23603
+#     RUNNER_TEMP = '/home/runner/work/_temp'
+23604
+#     GITHUB_STATE = '/home/runner/work/_temp/_runner_file_commands/save_state_0e483f7e-6354-4df0-a528-1761bd30268b'
+23605
+#     EDGEWEBDRIVER = '/usr/local/share/edge_driver'
+23606
+#     JAVA_HOME_21_X64 = '/usr/lib/jvm/temurin-21-jdk-amd64'
+23607
+#     GITHUB_ENV = '/home/runner/work/_temp/_runner_file_commands/set_env_0e483f7e-6354-4df0-a528-1761bd30268b'
+23608
+#     GITHUB_EVENT_PATH = '/home/runner/work/_temp/_github_workflow/event.json'
+23609
+#     INVOCATION_ID = 'bb29438df7784f7db4ceca3eefe27663'
+23610
+#     GITHUB_EVENT_NAME = 'push'
+23611
+#     GITHUB_RUN_ID = '22381111618'
+23612
+#     JAVA_HOME_17_X64 = '/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.18-8/x64'
+23613
+#     BUILDOZER_WARN_ON_ROOT = '0'
+23614
+#     ANDROID_NDK_HOME = '/usr/local/lib/android/sdk/ndk/27.3.13750724'
+23615
+#     GITHUB_STEP_SUMMARY = '/home/runner/work/_temp/_runner_file_commands/step_summary_0e483f7e-6354-4df0-a528-1761bd30268b'
+23616
+#     HOMEBREW_NO_AUTO_UPDATE = '1'
+23617
+#     GITHUB_ACTOR = 'xx8888888-xh'
+23618
+#     NVM_DIR = '/home/runner/.nvm'
+23619
+#     SGX_AESM_ADDR = '1'
+23620
+#     GITHUB_RUN_ATTEMPT = '1'
+23621
+#     ANDROID_HOME = '/usr/local/lib/android/sdk'
+23622
+#     GITHUB_GRAPHQL_URL = 'https://api.github.com/graphql'
+23623
+#     ACCEPT_EULA = 'Y'
+23624
+#     USER = 'runner'
+23625
+#     PSModulePath = '/root/.local/share/powershell/Modules:/usr/local/share/powershell/Modules:/opt/microsoft/powershell/7/Modules:/usr/share/az_14.6.0'
+23626
+#     GITHUB_SERVER_URL = 'https://github.com'
+23627
+#     PIPX_HOME = '/opt/pipx'
+23628
+#     GECKOWEBDRIVER = '/usr/local/share/gecko_driver'
+23629
+#     CHROMEWEBDRIVER = '/usr/local/share/chromedriver-linux64'
+23630
+#     SHLVL = '1'
+23631
+#     ANDROID_SDK_ROOT = '/usr/local/lib/android/sdk'
+23632
+#     VCPKG_INSTALLATION_ROOT = '/usr/local/share/vcpkg'
+23633
+#     GITHUB_ACTOR_ID = '226655973'
+23634
+#     ACTIONS_ORCHESTRATION_ID = 'a84d737e-71fe-4cb6-a5a0-08de36f10a3a.build.__default'
+23635
+#     RUNNER_TOOL_CACHE = '/opt/hostedtoolcache'
+23636
+#     ImageVersion = '20260201.24.1'
+23637
+#     Python3_ROOT_DIR = '/opt/hostedtoolcache/Python/3.10.19/x64'
+23638
+#     DOTNET_NOLOGO = '1'
+23639
+#     GOROOT_1_23_X64 = '/opt/hostedtoolcache/go/1.23.12/x64'
+23640
+#     GITHUB_WORKFLOW_SHA = '870da70640751fa6e427f0ff66b0175bfedfc53d'
+23641
+#     GOROOT_1_24_X64 = '/opt/hostedtoolcache/go/1.24.12/x64'
+23642
+#     GITHUB_REF_NAME = 'main'
+23643
+#     GITHUB_JOB = 'build'
+23644
+#     LD_LIBRARY_PATH = '/opt/hostedtoolcache/Python/3.10.19/x64/lib'
+23645
+#     XDG_RUNTIME_DIR = '/run/user/1001'
+23646
+#     AZURE_EXTENSION_DIR = '/opt/az/azcliextensions'
+23647
+#     GITHUB_REPOSITORY = 'xx8888888-xh/clock'
+23648
+#     Python2_ROOT_DIR = '/opt/hostedtoolcache/Python/3.10.19/x64'
+23649
+#     CHROME_BIN = '/usr/bin/google-chrome'
+23650
+#     GOROOT_1_22_X64 = '/opt/hostedtoolcache/go/1.22.12/x64'
+23651
+#     ANDROID_NDK_ROOT = '/usr/local/lib/android/sdk/ndk/27.3.13750724'
+23652
+#     GITHUB_RETENTION_DAYS = '90'
+23653
+#     JOURNAL_STREAM = '8:14518'
+23654
+#     RUNNER_WORKSPACE = '/home/runner/work/clock'
+23655
+#     LEIN_HOME = '/usr/local/lib/lein'
+23656
+#     LEIN_JAR = '/usr/local/lib/lein/self-installs/leiningen-2.12.0-standalone.jar'
+23657
+#     GITHUB_ACTION_REPOSITORY = ''
+23658
+#     PATH = '/home/runner/.buildozer/android/platform/apache-ant-1.9.4/bin:/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.18-8/x64/bin:/opt/hostedtoolcache/Python/3.10.19/x64/bin:/opt/hostedtoolcache/Python/3.10.19/x64:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'
+23659
+#     GITHUB_BASE_REF = ''
+23660
+#     GHCUP_INSTALL_BASE_PREFIX = '/usr/local'
+23661
+#     CI = 'true'
+23662
+#     SWIFT_PATH = '/usr/share/swift/usr/bin'
+23663
+#     ImageOS = 'ubuntu22'
+23664
+#     GITHUB_REPOSITORY_OWNER = 'xx8888888-xh'
+23665
+#     GITHUB_HEAD_REF = ''
+23666
+#     GITHUB_ACTION_REF = ''
+23667
+#     ENABLE_RUNNER_TRACING = 'true'
+23668
+#     GITHUB_WORKFLOW = 'Build Android APK'
+23669
+#     DEBIAN_FRONTEND = 'noninteractive'
+23670
+#     GITHUB_OUTPUT = '/home/runner/work/_temp/_runner_file_commands/set_output_0e483f7e-6354-4df0-a528-1761bd30268b'
+23671
+#     AGENT_TOOLSDIRECTORY = '/opt/hostedtoolcache'
+23672
+#     _ = '/opt/hostedtoolcache/Python/3.10.19/x64/bin/buildozer'
+23673
+#     PACKAGES_PATH = '/home/runner/.buildozer/android/packages'
+23674
+#     ANDROIDSDK = '/home/runner/.buildozer/android/platform/android-sdk'
+23675
+#     ANDROIDNDK = '/home/runner/.buildozer/android/platform/android-ndk-r25b'
+23676
+#     ANDROIDAPI = '33'
+23677
+#     ANDROIDMINAPI = '21'
+23678
+# 
+23679
+# Buildozer failed to execute the last command
+23680
+# The error might be hidden in the log above this error
+23681
+# Please read the full log, and search for it before
+23682
+# raising an issue with buildozer itself.
+23683
+# In case of a bug report, please add a full log with log_level = 2
+23684
+Error: Process completed with exit code 1.
