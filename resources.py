@@ -4,6 +4,7 @@
 """
 
 import os
+import re
 from datetime import datetime, timedelta
 
 # 默认宠物图片路径
@@ -36,16 +37,17 @@ APP_CONFIG = {
 
 # 颜色配置
 COLORS = {
-    'primary': [0.2, 0.6, 0.8, 1],      # 主要颜色 - 蓝色
-    'secondary': [0.3, 0.7, 0.9, 1],    # 次要颜色 - 浅蓝
-    'accent': [1, 0.6, 0.2, 1],         # 强调色 - 橙色
-    'background': [0.95, 0.95, 0.95, 1], # 背景色
-    'text': [0.1, 0.1, 0.1, 1],         # 文字颜色
-    'success': [0.3, 0.8, 0.3, 1],      # 成功颜色 - 绿色
-    'warning': [1, 0.8, 0.2, 1],        # 警告颜色 - 黄色
-    'error': [1, 0.3, 0.3, 1],          # 错误颜色 - 红色
+    'primary': [1, 0.56, 0.69, 1],      # 主要颜色 - 可爱粉 (#FF8FB1)
+    'secondary': [0.71, 0.92, 0.92, 1],  # 次要颜色 - 薄荷绿 (#B5EAEA)
+    'accent': [1, 0.88, 0.58, 1],        # 强调色 - 奶油黄 (#FFE194)
+    'purple': [0.83, 0.64, 1, 1],        # 紫色 - 薰衣草紫 (#D4A5FF)
+    'coral': [1, 0.6, 0.54, 1],          # 珊瑚色 (#FF9A8B)
+    'background': [1, 0.96, 0.97, 1],    # 背景色 - 浅粉 (#FFF5F7)
+    'text': [0.35, 0.3, 0.3, 1],         # 文字颜色 (#5A4A4A)
     'white': [1, 1, 1, 1],
-    'black': [0, 0, 0, 1],
+    'shadow': [0, 0, 0, 0.15],           # 阴影颜色
+    'success': [0.3, 0.8, 0.3, 1],       # 成功颜色 - 绿色
+    'error': [1, 0.3, 0.3, 1],           # 错误颜色 - 红色
     'transparent': [0, 0, 0, 0]
 }
 
@@ -344,11 +346,7 @@ def get_pet_emotion(hour):
         return 'sleepy', '该睡觉了，晚安！'
 
 
-# 导入re模块用于正则表达式
-try:
-    import re
-except ImportError:
-    pass
+
 
 
 if __name__ == '__main__':

@@ -101,17 +101,24 @@ jobs:
         unzip -q commandlinetools-linux-11076708_latest.zip
         mkdir -p android-sdk/cmdline-tools
         mv cmdline-tools android-sdk/cmdline-tools/latest
+        # Create symlink for Buildozer compatibility
+        mkdir -p android-sdk/tools/bin
+        ln -sf ../../cmdline-tools/latest/bin/sdkmanager android-sdk/tools/bin/sdkmanager
         # Accept licenses and install platform-tools
         yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses --sdk_root=android-sdk
-        android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.0"
+        yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.0"
+        # Download and install NDK
+        wget -q https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
+        unzip -q android-ndk-r25b-linux.zip
+        # NDK 解压后已经是正确的目录名，不需要移动
+        # 验证 NDK 安装
+        ls -la
 
     - name: Build APK
       run: |
         export BUILDOZER_WARN_ON_ROOT=0
-        export ANDROIDSDK=~/.buildozer/android/platform/android-sdk
-        export ANDROIDNDK=~/.buildozer/android/platform/android-ndk-r25b
-        export ANDROIDAPI=33
-        export ANDROIDMINAPI=21
+        # 让 Buildozer 自动处理 SDK 和 NDK 路径
+        # 移除可能导致冲突的环境变量
         buildozer android debug
       timeout-minutes: 90
 

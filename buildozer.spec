@@ -18,7 +18,6 @@ android.permissions = INTERNET, VIBRATE, SYSTEM_ALERT_WINDOW, WAKE_LOCK, FOREGRO
 android.api = 33
 android.minapi = 21
 android.target_api = 33
-android.sdk = 34
 android.ndk = 25b
 android.ndk_api = 21
 android.archs = armeabi-v7a, arm64-v8a

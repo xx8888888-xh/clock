@@ -744,13 +744,17 @@ class AlarmClock:
                 microsecond=0
             )
             
+            # 计算时间差（秒）
             time_diff = abs((now - alarm_time).total_seconds())
             
-            if time_diff <= 30:
+            # 使用更小的时间差阈值，提高准确性
+            if time_diff <= 5:
                 if not alarm['repeat_days']:
+                    # 单次闹钟：触发后禁用
                     triggered_alarms.append(alarm)
                     alarm['enabled'] = False
                 elif now.weekday() in alarm['repeat_days']:
+                    # 重复闹钟：触发后保持启用状态
                     triggered_alarms.append(alarm)
         
         if triggered_alarms:
@@ -1665,9 +1669,30 @@ class DesktopPetAlarmApp(App):
         
         self.load_alarm_sound()
         
+        # 检查并请求权限
+        Clock.schedule_once(lambda dt: self.check_permissions(), 1)
+        
         self.sleep_check_event = Clock.schedule_interval(self.check_pet_sleep_state, 60)
         
         return self.root
+    
+    def check_permissions(self):
+        """检查并请求必要的权限"""
+        try:
+            # 导入必要的模块
+            from plyer import permission
+            from kivy import platform
+            
+            if platform == 'android':
+                # 检查并请求 SYSTEM_ALERT_WINDOW 权限
+                # 注意：SYSTEM_ALERT_WINDOW 是一个特殊权限，需要用户手动授予
+                print("检查 Android 权限...")
+                
+                # 提示用户授予悬浮窗权限
+                self.banner.show("权限提示", "请在系统设置中授予悬浮窗权限，以确保应用正常运行", 10)
+                
+        except Exception as e:
+            print(f"检查权限时出错: {e}")
     
     def load_alarm_sound(self):
         try:
@@ -1676,8 +1701,12 @@ class DesktopPetAlarmApp(App):
                 if os.path.exists(sound_file):
                     self.alarm_sound = SoundLoader.load(sound_file)
                     break
+            
+            # 如果没有找到声音文件，不做特殊处理，保持 self.alarm_sound 为 None
+            # 后续播放时会检查是否存在
         except Exception as e:
             print(f"加载声音失败: {e}")
+            self.alarm_sound = None
     
     def show_main_menu(self):
         menu = MainMenu(self)
@@ -1750,9 +1779,11 @@ class DesktopPetAlarmApp(App):
         try:
             if (self.alarm_manager.settings.get('sound_enabled', True) and 
                 self.alarm_sound):
-                volume = self.alarm_manager.settings.get('volume', 0.8)
-                self.alarm_sound.volume = volume
-                self.alarm_sound.play()
+                # 检查声音是否已经在播放
+                if not hasattr(self.alarm_sound, 'state') or self.alarm_sound.state != 'play':
+                    volume = self.alarm_manager.settings.get('volume', 0.8)
+                    self.alarm_sound.volume = volume
+                    self.alarm_sound.play()
         except Exception as e:
             print(f"播放声音失败: {e}")
     
