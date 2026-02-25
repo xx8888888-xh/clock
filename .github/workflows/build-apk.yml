@@ -83,11 +83,28 @@ jobs:
 
     - name: Clean previous build
       run: |
-        rm -rf bin/ .buildozer/android/platform/build-arm64-v8a_armeabi-v7a/
+        rm -rf bin/ .buildozer/
+
+    - name: Pre-install Android SDK
+      run: |
+        mkdir -p ~/.buildozer/android/platform/
+        cd ~/.buildozer/android/platform/
+        # Download command line tools
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+        unzip -q commandlinetools-linux-11076708_latest.zip
+        mkdir -p android-sdk/cmdline-tools
+        mv cmdline-tools android-sdk/cmdline-tools/latest
+        # Accept licenses and install platform-tools
+        yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses --sdk_root=android-sdk
+        android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.0"
 
     - name: Build APK
       run: |
         export BUILDOZER_WARN_ON_ROOT=0
+        export ANDROIDSDK=~/.buildozer/android/platform/android-sdk
+        export ANDROIDNDK=~/.buildozer/android/platform/android-ndk-r25b
+        export ANDROIDAPI=33
+        export ANDROIDMINAPI=21
         buildozer android debug
       timeout-minutes: 90
 
