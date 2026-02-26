@@ -126,8 +126,10 @@ jobs:
         # 让 Buildozer 自动处理 SDK 和 NDK 路径
         # 移除可能导致冲突的环境变量
         # 详细日志输出，保存到本地 log 文件
-        # 先运行 Cython 生成 jnius.c 文件
+        # 先运行 Cython 生成必要的 .c 文件
         python -m cython --version
+        # 设置 Cython 环境变量，确保正确编译
+        export CYTHON_FORCE_NO_DOCSTRINGS=1
         buildozer android debug > build.log 2>&1 || true
         # 显示最后 500 行日志，便于调试
         tail -500 build.log
