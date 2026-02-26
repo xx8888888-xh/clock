@@ -106,9 +106,13 @@ jobs:
         # Create symlink for Buildozer compatibility
         mkdir -p android-sdk/tools/bin
         ln -sf ../../cmdline-tools/latest/bin/sdkmanager android-sdk/tools/bin/sdkmanager
+        # Set Android SDK root environment variable
+        export ANDROID_SDK_ROOT=$(pwd)/android-sdk
+        # Update sdkmanager package repository
+        yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --update
         # Accept licenses and install platform-tools
-        yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses --sdk_root=android-sdk
-        yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.0"
+        yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses
+        yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platform-tools" "platforms;android-33" "build-tools;33.0.0"
         # Download and install NDK
         wget -q https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
         unzip -q android-ndk-r25b-linux.zip
