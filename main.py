@@ -31,9 +31,39 @@ from kivy.properties import NumericProperty, ListProperty, BooleanProperty
 from kivy.config import Config
 from kivy.utils import get_color_from_hex
 from kivy.metrics import dp, sp
-from plyer import notification
-from plyer import vibrator
 import time
+import os
+
+# 尝试导入 plyer，如果失败则使用自定义实现
+try:
+    from plyer import notification
+    from plyer import vibrator
+    PLYER_AVAILABLE = True
+except ImportError:
+    PLYER_AVAILABLE = False
+    notification = None
+    vibrator = None
+
+# 自定义通知和振动实现
+class AndroidNotification:
+    @staticmethod
+    def notify(title, message, app_name='宠物闹钟'):
+        if notification:
+            try:
+                notification.notify(title=title, message=message, app_name=app_name)
+            except Exception as e:
+                print(f"通知发送失败: {e}")
+        else:
+            print(f"通知: {title} - {message}")
+
+class AndroidVibrator:
+    @staticmethod
+    def vibrate(duration=1):
+        if vibrator:
+            try:
+                vibrator.vibrate(duration)
+            except Exception as e:
+                print(f"振动失败: {e}")
 
 # 设置窗口透明背景
 Config.set('graphics', 'background_color', '0,0,0,0')
@@ -1756,15 +1786,18 @@ class DesktopPetAlarmApp(App):
         self.play_alarm_sound()
         self.vibrate()
         
-        try:
-            notification.notify(
-                title=f"宠物闹钟 - {timer['label']}",
-                message="倒计时结束！",
-                app_name='宠物闹钟',
-                timeout=10
-            )
-        except Exception as e:
-            print(f"显示通知失败: {e}")
+        if PLYER_AVAILABLE and notification:
+            try:
+                notification.notify(
+                    title=f"宠物闹钟 - {timer['label']}",
+                    message="倒计时结束！",
+                    app_name='宠物闹钟',
+                    timeout=10
+                )
+            except Exception as e:
+                print(f"显示通知失败: {e}")
+        else:
+            print(f"倒计时结束: {timer['label']}")
     
     def show_alarm_banner(self, alarm):
         title = alarm['label']
@@ -1790,31 +1823,40 @@ class DesktopPetAlarmApp(App):
     def vibrate(self):
         try:
             if self.alarm_manager.settings.get('vibrate', True):
-                vibrator.vibrate(1)
+                if PLYER_AVAILABLE and vibrator:
+                    vibrator.vibrate(1)
+                else:
+                    print("振动功能不可用")
         except Exception as e:
             print(f"振动失败: {e}")
     
     def show_alarm_notification(self, alarm):
-        try:
-            notification.notify(
-                title=f"宠物闹钟 - {alarm['label']}",
-                message=alarm.get('content', '时间到了！'),
-                app_name='宠物闹钟',
-                timeout=10
-            )
-        except Exception as e:
-            print(f"显示通知失败: {e}")
+        if PLYER_AVAILABLE and notification:
+            try:
+                notification.notify(
+                    title=f"宠物闹钟 - {alarm['label']}",
+                    message=alarm.get('content', '时间到了！'),
+                    app_name='宠物闹钟',
+                    timeout=10
+                )
+            except Exception as e:
+                print(f"显示通知失败: {e}")
+        else:
+            print(f"闹钟提醒: {alarm['label']} - {alarm.get('content', '时间到了！')}")
     
     def show_notification(self, message):
-        try:
-            notification.notify(
-                title="宠物闹钟",
-                message=message,
-                app_name='宠物闹钟',
-                timeout=5
+        if PLYER_AVAILABLE and notification:
+            try:
+                notification.notify(
+                    title="宠物闹钟",
+                    message=message,
+                    app_name='宠物闹钟',
+                    timeout=5
             )
-        except Exception as e:
-            print(f"显示通知失败: {e}")
+            except Exception as e:
+                print(f"显示通知失败: {e}")
+        else:
+            print(f"通知: {message}")
     
     def on_stop(self):
         if self.alarm_manager:
