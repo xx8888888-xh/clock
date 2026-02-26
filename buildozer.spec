@@ -6,9 +6,9 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,json,ttf,wav,mp3
 source.main = main.py
 version = 3.0.0
-requirements = python3,kivy==2.3.0,pillow,cython==0.29.36
-android.packages = libffi, libssl, libcrypto
-android.exclude_libs = _lzma, _uuid, grp, _sqlite3, spwd, _gdbm, _curses, _curses_panel, readline, tcl, tk, _tkinter
+requirements = python3,kivy,pillow
+android.packages = libffi
+android.allow_empty_libs = True
 icon.filename = icon.png
 orientation = portrait
 fullscreen = 0
