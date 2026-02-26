@@ -59,6 +59,7 @@ jobs:
           pkg-config \
           libffi-dev \
           libssl-dev \
+          liblzma-dev \
           openjdk-17-jdk
 
     - name: Set up Java 17
