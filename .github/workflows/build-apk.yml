@@ -108,7 +108,7 @@ jobs:
         ln -sf ../../cmdline-tools/latest/bin/sdkmanager android-sdk/tools/bin/sdkmanager
         # Accept licenses and install platform-tools
         yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses --sdk_root=android-sdk
-        yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.0"
+        yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=android-sdk "platform-tools;android-33" "build-tools;33.0.0"
         # Download and install NDK
         wget -q https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
         unzip -q android-ndk-r25b-linux.zip
