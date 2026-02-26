@@ -7,8 +7,8 @@ source.include_exts = py,png,jpg,kv,atlas,json,ttf,wav,mp3
 source.main = main.py
 version = 3.0.0
 requirements = python3,kivy==2.3.0,plyer,pillow,cython==0.29.36
-android.packages = liblzma, libuuid, libffi, libssl, libcrypto
-android.exclude_libs = _lzma, _uuid, grp, _sqlite3, _uuid, spwd
+android.packages = libffi, libssl, libcrypto
+android.exclude_libs = _lzma, _uuid, grp, _sqlite3, spwd, _gdbm, _curses, _curses_panel, readline, tcl, tk, _tkinter
 icon.filename = icon.png
 orientation = portrait
 fullscreen = 0
