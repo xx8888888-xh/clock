@@ -93,6 +93,7 @@ jobs:
     - name: Clean previous build
       run: |
         rm -rf bin/
+        rm -rf .buildozer/
 
     - name: Pre-install Android SDK
       run: |
