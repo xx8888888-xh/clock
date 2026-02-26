@@ -130,6 +130,11 @@ jobs:
         python -m cython --version
         # 设置 Cython 环境变量，确保正确编译
         export CYTHON_FORCE_NO_DOCSTRINGS=1
+        # 预先编译 pyjnius，确保 jnius.c 文件存在
+        if [ -d ".buildozer/android/platform/python-for-android/dist" ]; then
+          cd .buildozer/android/platform/python-for-android/dist
+          python -m cython pyjnius/jnius.pyx || true
+        fi
         buildozer android debug > build.log 2>&1 || true
         # 显示最后 500 行日志，便于调试
         tail -500 build.log
