@@ -8,6 +8,7 @@ source.main = main.py
 version = 3.0.0
 requirements = python3,kivy==2.3.0,plyer,pillow,cython==0.29.36,pyjnius
 android.packages = liblzma, libuuid
+android.exclude_libs = _lzma, _uuid, grp
 icon.filename = icon.png
 orientation = portrait
 fullscreen = 0
