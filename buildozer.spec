@@ -9,6 +9,7 @@ version = 3.0.0
 requirements = python3,kivy,pillow
 android.packages = libffi
 android.allow_empty_libs = True
+android.exclude_libs = _lzma
 icon.filename = icon.png
 orientation = portrait
 fullscreen = 0
