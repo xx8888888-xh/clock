@@ -7,6 +7,7 @@ source.include_exts = py,png,jpg,kv,atlas,json,ttf,wav,mp3
 source.main = main.py
 version = 3.0.0
 requirements = python3,kivy,pillow
+android.no_embed_java = True
 android.allow_empty_libs = True
 android.exclude_libs = _lzma, pyjnius
 android.packages = libffi
