@@ -571,8 +571,10 @@ class AlarmClock:
     
     def load_settings(self):
         try:
-            if os.path.exists('alarm_settings.json'):
-                with open('alarm_settings.json', 'r', encoding='utf-8') as f:
+            import os
+            file_path = os.path.join(os.getcwd(), 'alarm_settings.json')
+            if os.path.exists(file_path):
+                with open(file_path, 'r', encoding='utf-8') as f:
                     return json.load(f)
         except Exception as e:
             print(f"加载设置失败: {e}")
@@ -580,8 +582,13 @@ class AlarmClock:
     
     def save_settings(self):
         try:
-            with open('alarm_settings.json', 'w', encoding='utf-8') as f:
+            import os
+            file_path = os.path.join(os.getcwd(), 'alarm_settings.json')
+            with open(file_path, 'w', encoding='utf-8') as f:
                 json.dump(self.settings, f, ensure_ascii=False, indent=2)
+            # 设置文件权限
+            import stat
+            os.chmod(file_path, stat.S_IRUSR | stat.S_IWUSR)
         except Exception as e:
             print(f"保存设置失败: {e}")
     
