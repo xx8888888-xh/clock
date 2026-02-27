@@ -12,15 +12,15 @@ jobs:
       contents: write
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4.1.7
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.10.19'
 
     - name: Cache Buildozer dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v4.0.2
       with:
         path: |
           ~/.buildozer
@@ -113,7 +113,7 @@ jobs:
     - name: Set up Java 17
       uses: actions/setup-java@v4
       with:
-        java-version: '17'
+        java-version: '17.0.11'
         distribution: 'temurin'
 
     - name: Install Python dependencies
@@ -135,13 +135,13 @@ jobs:
           exit 1
         }
         
-        # 安装 buildozer 和 cython（使用最新兼容版本）
+        # 安装 buildozer 和 cython（使用兼容版本）
         echo "安装 buildozer 和 cython..."
         echo "$(date): 安装 buildozer 和 cython" >> $LOG_FILE
-        pip install buildozer cython >> $LOG_FILE 2>&1 || {
+        pip install buildozer==1.5.0 cython==0.29.36 >> $LOG_FILE 2>&1 || {
           echo "错误: 安装 buildozer 或 cython 失败"
           echo "$(date): 安装 buildozer 或 cython 失败" >> $LOG_FILE
-          echo "请手动运行: pip install buildozer cython"
+          echo "请手动运行: pip install buildozer==1.5.0 cython==0.29.36"
           exit 1
         }
         
@@ -321,7 +321,7 @@ jobs:
         echo "执行 Buildozer 构建..."
         echo "$(date): 开始执行 Buildozer 构建" >> $LOG_FILE
         # 构建 APK（pyjnius 已在 buildozer.spec 中排除）
-        buildozer android debug >> $LOG_FILE 2>&1 || {
+        buildozer android debug --ignore-setup-py >> $LOG_FILE 2>&1 || {
           echo "错误: 构建过程失败"
           echo "$(date): 构建过程失败" >> $LOG_FILE
           # 显示关键错误信息（只显示最后20行错误）
@@ -376,7 +376,6 @@ jobs:
       with:
         name: build-logs
         path: |
-          build.log
           build-apk.log
           system-deps-install.log
           python-deps-install.log
@@ -385,7 +384,7 @@ jobs:
 
     - name: Create Release
       if: success() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v2.0.4
       with:
         files: bin/*.apk
         tag_name: v3.0.${{ github.run_number }}

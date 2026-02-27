@@ -797,15 +797,23 @@ class AlarmClock:
     
     def save_alarms(self):
         try:
-            with open('alarms.json', 'w', encoding='utf-8') as f:
+            # 确保文件路径安全，只在当前目录写入
+            import os
+            file_path = os.path.join(os.getcwd(), 'alarms.json')
+            with open(file_path, 'w', encoding='utf-8') as f:
                 json.dump(self.alarms, f, ensure_ascii=False, indent=2)
+            # 设置文件权限，限制访问
+            import stat
+            os.chmod(file_path, stat.S_IRUSR | stat.S_IWUSR)  # 只有所有者可读写
         except Exception as e:
             print(f"保存闹钟失败: {e}")
     
     def load_alarms(self):
         try:
-            if os.path.exists('alarms.json'):
-                with open('alarms.json', 'r', encoding='utf-8') as f:
+            import os
+            file_path = os.path.join(os.getcwd(), 'alarms.json')
+            if os.path.exists(file_path):
+                with open(file_path, 'r', encoding='utf-8') as f:
                     self.alarms = json.load(f)
         except Exception as e:
             print(f"加载闹钟失败: {e}")
@@ -813,8 +821,18 @@ class AlarmClock:
     
     def export_alarms(self, filepath):
         try:
-            with open(filepath, 'w', encoding='utf-8') as f:
+            import os
+            # 确保文件路径安全，防止路径遍历攻击
+            if '..' in filepath or '/' in filepath or '\\' in filepath:
+                print("错误: 无效的文件路径")
+                return False
+            # 限制导出到当前目录
+            safe_path = os.path.join(os.getcwd(), os.path.basename(filepath))
+            with open(safe_path, 'w', encoding='utf-8') as f:
                 json.dump(self.alarms, f, ensure_ascii=False, indent=2)
+            # 设置文件权限
+            import stat
+            os.chmod(safe_path, stat.S_IRUSR | stat.S_IWUSR)
             return True
         except Exception as e:
             print(f"导出闹钟失败: {e}")
@@ -1883,8 +1901,13 @@ class DesktopPetAlarmApp(App):
                 'pet_size': self.pet.pet_size if self.pet else 160,
                 'pet_opacity': self.pet.pet_opacity if self.pet else 1.0
             }
-            with open('window_pos.json', 'w', encoding='utf-8') as f:
+            import os
+            file_path = os.path.join(os.getcwd(), 'window_pos.json')
+            with open(file_path, 'w', encoding='utf-8') as f:
                 json.dump(window_pos, f, ensure_ascii=False, indent=2)
+            # 设置文件权限
+            import stat
+            os.chmod(file_path, stat.S_IRUSR | stat.S_IWUSR)
         except Exception as e:
             print(f"保存窗口位置失败: {e}")
         
@@ -1892,15 +1915,19 @@ class DesktopPetAlarmApp(App):
     
     def on_start(self):
         try:
-            if os.path.exists('window_pos.json'):
-                with open('window_pos.json', 'r', encoding='utf-8') as f:
+            import os
+            file_path = os.path.join(os.getcwd(), 'window_pos.json')
+            if os.path.exists(file_path):
+                with open(file_path, 'r', encoding='utf-8') as f:
                     window_pos = json.load(f)
-                Window.left = window_pos.get('left', 100)
-                Window.top = window_pos.get('top', 500)
-                if self.pet:
-                    self.pet.pet_size = window_pos.get('pet_size', 160)
-                    self.pet.pet_opacity = window_pos.get('pet_opacity', 1.0)
-                    self.pet.opacity = self.pet.pet_opacity
+                # 验证数据类型，防止恶意数据
+                if isinstance(window_pos, dict):
+                    Window.left = window_pos.get('left', 100)
+                    Window.top = window_pos.get('top', 500)
+                    if self.pet:
+                        self.pet.pet_size = window_pos.get('pet_size', 160)
+                        self.pet.pet_opacity = window_pos.get('pet_opacity', 1.0)
+                        self.pet.opacity = self.pet.pet_opacity
         except Exception as e:
             print(f"恢复窗口位置失败: {e}")
 
