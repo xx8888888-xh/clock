@@ -320,8 +320,8 @@ jobs:
         # 执行构建
         echo "执行 Buildozer 构建..."
         echo "$(date): 开始执行 Buildozer 构建" >> $LOG_FILE
-        # 明确指定不使用pyjnius
-        buildozer android debug --requirements=python3,kivy,pillow --exclude=pyjnius >> $LOG_FILE 2>&1 || {
+        # 构建 APK（pyjnius 已在 buildozer.spec 中排除）
+        buildozer android debug >> $LOG_FILE 2>&1 || {
           echo "错误: 构建过程失败"
           echo "$(date): 构建过程失败" >> $LOG_FILE
           # 显示关键错误信息（只显示最后50行错误）
