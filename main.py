@@ -1733,8 +1733,14 @@ class DesktopPetAlarmApp(App):
             
             if platform == 'android':
                 # 检查并请求 SYSTEM_ALERT_WINDOW 权限
-                # 注意：SYSTEM_ALERT_WINDOW 是一个特殊权限，需要用户手动授予
                 print("检查 Android 权限...")
+                
+                # 尝试请求权限
+                try:
+                    if not permission.check_permission('SYSTEM_ALERT_WINDOW'):
+                        permission.request_permission('SYSTEM_ALERT_WINDOW')
+                except Exception as perm_error:
+                    print(f"权限请求失败: {perm_error}")
                 
                 # 提示用户授予悬浮窗权限
                 self.banner.show("权限提示", "请在系统设置中授予悬浮窗权限，以确保应用正常运行", 10)
@@ -1757,16 +1763,25 @@ class DesktopPetAlarmApp(App):
             self.alarm_sound = None
     
     def show_main_menu(self):
-        menu = MainMenu(self)
-        menu.open()
+        try:
+            menu = MainMenu(self)
+            menu.open()
+        except Exception as e:
+            print(f"显示主菜单失败: {e}")
     
     def show_quick_menu(self):
-        menu = QuickMenu(self)
-        menu.open()
+        try:
+            menu = QuickMenu(self)
+            menu.open()
+        except Exception as e:
+            print(f"显示快捷菜单失败: {e}")
     
     def show_timer_dialog(self):
-        dialog = TimerDialog(self.timer_manager)
-        dialog.open()
+        try:
+            dialog = TimerDialog(self.timer_manager)
+            dialog.open()
+        except Exception as e:
+            print(f"显示计时器对话框失败: {e}")
     
     def check_pet_sleep_state(self, dt):
         now = datetime.now()
@@ -1785,46 +1800,60 @@ class DesktopPetAlarmApp(App):
                 self.pet.wake_up_animation()
     
     def trigger_alarm(self, alarm):
-        if self.pet.current_animation:
-            self.pet.current_animation.cancel(self.pet)
-        
-        self.pet.excited_animation()
-        self.show_alarm_banner(alarm)
-        self.show_alarm_trigger_dialog(alarm)
-        self.play_alarm_sound()
-        self.vibrate()
-        self.show_alarm_notification(alarm)
-        
-        Clock.schedule_once(lambda dt: self.alarm_manager.schedule_next_alarm(), 1)
+        try:
+            if self.pet and self.pet.current_animation:
+                self.pet.current_animation.cancel(self.pet)
+            
+            if self.pet:
+                self.pet.excited_animation()
+            self.show_alarm_banner(alarm)
+            self.show_alarm_trigger_dialog(alarm)
+            self.play_alarm_sound()
+            self.vibrate()
+            self.show_alarm_notification(alarm)
+            
+            Clock.schedule_once(lambda dt: self.alarm_manager.schedule_next_alarm(), 1)
+        except Exception as e:
+            print(f"触发闹钟失败: {e}")
     
     def trigger_timer_alarm(self, timer):
-        self.banner.show(f"⏱️ {timer['label']}", "时间到了！")
-        Clock.schedule_once(lambda dt: self.banner.hide(), self.banner_display_time)
-        
-        self.play_alarm_sound()
-        self.vibrate()
-        
-        if PLYER_AVAILABLE and notification:
-            try:
-                notification.notify(
-                    title=f"宠物闹钟 - {timer['label']}",
-                    message="倒计时结束！",
-                    app_name='宠物闹钟',
-                    timeout=10
-                )
-            except Exception as e:
-                print(f"显示通知失败: {e}")
-        else:
-            print(f"倒计时结束: {timer['label']}")
+        try:
+            self.banner.show(f"⏱️ {timer['label']}", "时间到了！")
+            Clock.schedule_once(lambda dt: self.banner.hide(), self.banner_display_time)
+            
+            self.play_alarm_sound()
+            self.vibrate()
+            
+            if PLYER_AVAILABLE and notification:
+                try:
+                    notification.notify(
+                        title=f"宠物闹钟 - {timer['label']}",
+                        message="倒计时结束！",
+                        app_name='宠物闹钟',
+                        timeout=10
+                    )
+                except Exception as e:
+                    print(f"显示通知失败: {e}")
+            else:
+                print(f"倒计时结束: {timer['label']}")
+        except Exception as e:
+            print(f"触发计时器失败: {e}")
     
     def show_alarm_banner(self, alarm):
-        title = alarm['label']
-        content = alarm.get('content', '时间到了！')
-        self.banner.show(title, content, self.banner_display_time)
+        try:
+            title = alarm['label']
+            content = alarm.get('content', '时间到了！')
+            if self.banner:
+                self.banner.show(title, content, self.banner_display_time)
+        except Exception as e:
+            print(f"显示闹钟横幅失败: {e}")
     
     def show_alarm_trigger_dialog(self, alarm):
-        dialog = AlarmTriggerDialog(self, alarm)
-        dialog.open()
+        try:
+            dialog = AlarmTriggerDialog(self, alarm)
+            dialog.open()
+        except Exception as e:
+            print(f"显示闹钟触发对话框失败: {e}")
     
     def play_alarm_sound(self):
         try:
