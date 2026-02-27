@@ -323,15 +323,15 @@ jobs:
         buildozer android debug >> $LOG_FILE 2>&1 || {
           echo "错误: 构建过程失败"
           echo "$(date): 构建过程失败" >> $LOG_FILE
-          # 显示关键错误信息
+          # 显示关键错误信息（只显示最后50行错误）
           echo "=== 构建错误详情 ==="
-          grep -E "error|Error|ERROR|failed|Failed|FAILED" $LOG_FILE | tail -100
+          grep -E "error|Error|ERROR|failed|Failed|FAILED" $LOG_FILE | tail -50
           exit 1
         }
         
-        # 显示构建日志的最后部分，便于调试
+        # 显示构建日志的最后部分，便于调试（只显示最后100行）
         echo "=== 构建日志摘要 ==="
-        tail -200 $LOG_FILE
+        tail -100 $LOG_FILE
         
         # 检查构建是否成功
         echo "检查构建结果..."
