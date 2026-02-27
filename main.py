@@ -6,6 +6,7 @@
 import os
 import json
 import gc
+import time
 from datetime import datetime, timedelta
 from kivy.app import App
 from kivy.core.window import Window
@@ -31,8 +32,13 @@ from kivy.properties import NumericProperty, ListProperty, BooleanProperty
 from kivy.config import Config
 from kivy.utils import get_color_from_hex
 from kivy.metrics import dp, sp
-import time
-import os
+
+ANDROID_API_AVAILABLE = False
+try:
+    from jnius import autoclass, cast
+    ANDROID_API_AVAILABLE = True
+except ImportError:
+    pass
 
 # 尝试导入 plyer，如果失败则使用自定义实现
 try:
@@ -537,6 +543,7 @@ class CutePet(Widget):
         self.size = (new_size, new_size)
         if self.pet_image:
             self.pet_image.size = self.size
+        self.update_pet()
     
     def cleanup(self):
         self.cancel_current_animation()
@@ -1308,25 +1315,41 @@ class QuickMenu(CutePopup):
         self.content = layout
     
     def new_alarm(self, instance):
-        self.dismiss()
-        dialog = AlarmDialog(self.app.alarm_manager)
-        dialog.open()
+        try:
+            self.dismiss()
+            if self.app and self.app.alarm_manager:
+                dialog = AlarmDialog(self.app.alarm_manager)
+                dialog.open()
+        except Exception as e:
+            print(f"新建闹钟失败: {e}")
     
     def show_timer(self, instance):
-        self.dismiss()
-        self.app.show_timer_dialog()
+        try:
+            self.dismiss()
+            if self.app:
+                self.app.show_timer_dialog()
+        except Exception as e:
+            print(f"显示计时器失败: {e}")
     
     def show_settings(self, instance):
-        self.dismiss()
-        settings = SettingsDialog(self.app)
-        settings.open()
+        try:
+            self.dismiss()
+            if self.app:
+                settings = SettingsDialog(self.app)
+                settings.open()
+        except Exception as e:
+            print(f"显示设置失败: {e}")
     
     def toggle_sleep(self, instance):
         self.dismiss()
-        if self.app.pet.is_sleeping:
-            self.app.pet.wake_up_animation()
-        else:
-            self.app.pet.start_sleep_animation()
+        try:
+            if self.app and self.app.pet:
+                if self.app.pet.is_sleeping:
+                    self.app.pet.wake_up_animation()
+                else:
+                    self.app.pet.start_sleep_animation()
+        except Exception as e:
+            print(f"切换睡眠模式失败: {e}")
 
 
 class MainMenu(CutePopup):
@@ -1468,37 +1491,66 @@ class MainMenu(CutePopup):
         return item_layout
     
     def edit_alarm(self, alarm):
-        self.dismiss()
-        dialog = AlarmDialog(self.app.alarm_manager, alarm['id'])
-        dialog.open()
+        try:
+            self.dismiss()
+            if self.app and self.app.alarm_manager and alarm:
+                dialog = AlarmDialog(self.app.alarm_manager, alarm['id'])
+                dialog.open()
+        except Exception as e:
+            print(f"编辑闹钟失败: {e}")
     
     def delete_alarm(self, alarm):
-        self.app.alarm_manager.remove_alarm(alarm['id'])
-        self.update_alarm_list()
+        try:
+            if self.app and self.app.alarm_manager and alarm:
+                self.app.alarm_manager.remove_alarm(alarm['id'])
+                self.update_alarm_list()
+        except Exception as e:
+            print(f"删除闹钟失败: {e}")
     
     def show_new_alarm_dialog(self, instance):
-        self.dismiss()
-        dialog = AlarmDialog(self.app.alarm_manager)
-        dialog.open()
+        try:
+            self.dismiss()
+            if self.app and self.app.alarm_manager:
+                dialog = AlarmDialog(self.app.alarm_manager)
+                dialog.open()
+        except Exception as e:
+            print(f"显示新建闹钟对话框失败: {e}")
     
     def show_batch_add_dialog(self, instance):
-        self.dismiss()
-        dialog = BatchAddDialog(self.app.alarm_manager)
-        dialog.open()
+        try:
+            self.dismiss()
+            if self.app and self.app.alarm_manager:
+                dialog = BatchAddDialog(self.app.alarm_manager)
+                dialog.open()
+        except Exception as e:
+            print(f"显示批量添加对话框失败: {e}")
     
     def show_timer_dialog(self, instance):
-        self.dismiss()
-        self.app.show_timer_dialog()
+        try:
+            self.dismiss()
+            if self.app:
+                self.app.show_timer_dialog()
+        except Exception as e:
+            print(f"显示计时器对话框失败: {e}")
     
     def show_settings(self, instance):
-        self.dismiss()
-        settings = SettingsDialog(self.app)
-        settings.open()
+        try:
+            self.dismiss()
+            if self.app:
+                settings = SettingsDialog(self.app)
+                settings.open()
+        except Exception as e:
+            print(f"显示设置对话框失败: {e}")
     
     def export_alarms(self, instance):
-        if self.app.alarm_manager.export_alarms('alarms_backup.json'):
-            self.next_alarm_label.text = "✅ 闹钟已导出到 alarms_backup.json"
-        else:
+        try:
+            if self.app and self.app.alarm_manager:
+                if self.app.alarm_manager.export_alarms('alarms_backup.json'):
+                    self.next_alarm_label.text = "✅ 闹钟已导出到 alarms_backup.json"
+                else:
+                    self.next_alarm_label.text = "❌ 导出失败"
+        except Exception as e:
+            print(f"导出闹钟失败: {e}")
             self.next_alarm_label.text = "❌ 导出失败"
 
 
@@ -1605,39 +1657,70 @@ class SettingsDialog(CutePopup):
         self.content = layout
     
     def on_size_change(self, instance, value):
-        self.app.pet.pet_size = value
+        try:
+            if self.app and self.app.pet:
+                self.app.pet.pet_size = value
+        except Exception as e:
+            print(f"设置宠物大小失败: {e}")
     
     def on_opacity_change(self, instance, value):
-        self.app.pet.pet_opacity = value
-        self.app.pet.opacity = value
+        try:
+            if self.app and self.app.pet:
+                self.app.pet.pet_opacity = value
+                self.app.pet.opacity = value
+        except Exception as e:
+            print(f"设置透明度失败: {e}")
     
     def on_banner_time_change(self, instance, value):
-        self.app.banner_display_time = value
+        try:
+            if self.app:
+                self.app.banner_display_time = value
+        except Exception as e:
+            print(f"设置横幅时间失败: {e}")
     
     def on_snooze_change(self, instance, value):
-        self.app.alarm_manager.settings['snooze_duration'] = int(value)
-        self.app.alarm_manager.save_settings()
+        try:
+            if self.app and self.app.alarm_manager:
+                self.app.alarm_manager.settings['snooze_duration'] = int(value)
+                self.app.alarm_manager.save_settings()
+        except Exception as e:
+            print(f"设置贪睡时间失败: {e}")
     
     def on_max_snooze_change(self, instance, value):
-        self.app.alarm_manager.settings['max_snooze_count'] = int(value)
-        self.app.alarm_manager.save_settings()
+        try:
+            if self.app and self.app.alarm_manager:
+                self.app.alarm_manager.settings['max_snooze_count'] = int(value)
+                self.app.alarm_manager.save_settings()
+        except Exception as e:
+            print(f"设置最大贪睡次数失败: {e}")
     
     def on_vibrate_change(self, instance, value):
-        self.app.alarm_manager.settings['vibrate'] = value
-        self.app.alarm_manager.save_settings()
+        try:
+            if self.app and self.app.alarm_manager:
+                self.app.alarm_manager.settings['vibrate'] = value
+                self.app.alarm_manager.save_settings()
+        except Exception as e:
+            print(f"设置振动失败: {e}")
     
     def on_sound_change(self, instance, value):
-        self.app.alarm_manager.settings['sound_enabled'] = value
-        self.app.alarm_manager.save_settings()
+        try:
+            if self.app and self.app.alarm_manager:
+                self.app.alarm_manager.settings['sound_enabled'] = value
+                self.app.alarm_manager.save_settings()
+        except Exception as e:
+            print(f"设置声音失败: {e}")
     
     def reset_settings(self, instance):
-        self.size_slider.value = 160
-        self.opacity_slider.value = 1.0
-        self.banner_slider.value = 5
-        self.snooze_slider.value = 5
-        self.max_snooze_slider.value = 3
-        self.vibrate_switch.active = True
-        self.sound_switch.active = True
+        try:
+            self.size_slider.value = 160
+            self.opacity_slider.value = 1.0
+            self.banner_slider.value = 5
+            self.snooze_slider.value = 5
+            self.max_snooze_slider.value = 3
+            self.vibrate_switch.active = True
+            self.sound_switch.active = True
+        except Exception as e:
+            print(f"重置设置失败: {e}")
 
 
 class AlarmTriggerDialog(CutePopup):
@@ -1679,16 +1762,26 @@ class AlarmTriggerDialog(CutePopup):
         self.content = layout
     
     def snooze_alarm(self, instance):
-        success, minutes = self.app.alarm_manager.snooze_alarm(self.alarm['id'])
-        if success:
-            self.dismiss()
-            self.app.show_notification(f"😴 贪睡 {minutes} 分钟后再次提醒")
-        else:
-            instance.text = '⚠️ 已达上限'
+        try:
+            if self.app and self.app.alarm_manager and self.alarm:
+                success, minutes = self.app.alarm_manager.snooze_alarm(self.alarm['id'])
+                if success:
+                    self.dismiss()
+                    self.app.show_notification(f"😴 贪睡 {minutes} 分钟后再次提醒")
+                else:
+                    instance.text = '⚠️ 已达上限'
+        except Exception as e:
+            print(f"贪睡失败: {e}")
+            instance.text = '⚠️ 操作失败'
     
     def close_alarm(self, instance):
-        self.app.alarm_manager.stop_alarm(self.alarm['id'])
-        self.dismiss()
+        try:
+            if self.app and self.app.alarm_manager and self.alarm:
+                self.app.alarm_manager.stop_alarm(self.alarm['id'])
+            self.dismiss()
+        except Exception as e:
+            print(f"关闭闹钟失败: {e}")
+            self.dismiss()
 
 
 # ==================== 主应用类 ====================
@@ -1711,6 +1804,8 @@ class DesktopPetAlarmApp(App):
         Window.left = 100
         Window.top = 500
         
+        Window.clearcolor = (0, 0, 0, 0)
+        
         self.root = FloatLayout()
         
         self.alarm_manager = AlarmClock()
@@ -1724,7 +1819,6 @@ class DesktopPetAlarmApp(App):
         
         self.load_alarm_sound()
         
-        # 检查并请求权限
         Clock.schedule_once(lambda dt: self.check_permissions(), 1)
         
         self.sleep_check_event = Clock.schedule_interval(self.check_pet_sleep_state, 60)
@@ -1734,24 +1828,37 @@ class DesktopPetAlarmApp(App):
     def check_permissions(self):
         """检查并请求必要的权限"""
         try:
-            # 导入必要的模块
-            from plyer import permission
             from kivy import platform
             
             if platform == 'android':
-                # 检查并请求 SYSTEM_ALERT_WINDOW 权限
                 print("检查 Android 权限...")
                 
-                # 尝试请求权限
-                try:
-                    if not permission.check_permission('SYSTEM_ALERT_WINDOW'):
-                        permission.request_permission('SYSTEM_ALERT_WINDOW')
-                except Exception as perm_error:
-                    print(f"权限请求失败: {perm_error}")
-                
-                # 提示用户授予悬浮窗权限
-                self.banner.show("权限提示", "请在系统设置中授予悬浮窗权限，以确保应用正常运行", 10)
-                
+                if ANDROID_API_AVAILABLE:
+                    try:
+                        PythonActivity = autoclass('org.kivy.android.PythonActivity')
+                        Settings = autoclass('android.provider.Settings')
+                        Intent = autoclass('android.content.Intent')
+                        Uri = autoclass('android.net.Uri')
+                        
+                        current_activity = cast('android.app.Activity', PythonActivity.mActivity)
+                        
+                        if not Settings.canDrawOverlays(current_activity):
+                            print("请求悬浮窗权限...")
+                            intent = Intent(
+                                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                Uri.parse("package:" + current_activity.getPackageName())
+                            )
+                            current_activity.startActivityForResult(intent, 1234)
+                            
+                            self.banner.show("权限提示", "请允许悬浮窗权限后重启应用", 15)
+                        else:
+                            print("已有悬浮窗权限")
+                    except Exception as e:
+                        print(f"请求悬浮窗权限失败: {e}")
+                        self.banner.show("权限提示", "请在设置中手动开启悬浮窗权限", 10)
+                else:
+                    self.banner.show("权限提示", "请在系统设置中授予悬浮窗权限", 10)
+                    
         except Exception as e:
             print(f"检查权限时出错: {e}")
     
@@ -1791,20 +1898,25 @@ class DesktopPetAlarmApp(App):
             print(f"显示计时器对话框失败: {e}")
     
     def check_pet_sleep_state(self, dt):
-        now = datetime.now()
-        hour = now.hour
-        
-        sleep_start = DEFAULT_PET_SETTINGS.get('sleep_start_hour', 22)
-        sleep_end = DEFAULT_PET_SETTINGS.get('sleep_end_hour', 7)
-        
-        should_sleep = hour >= sleep_start or hour < sleep_end
-        
-        if should_sleep:
-            if not self.pet.is_sleeping:
-                self.pet.start_sleep_animation()
-        else:
-            if self.pet.is_sleeping:
-                self.pet.wake_up_animation()
+        try:
+            if not self.pet:
+                return
+            now = datetime.now()
+            hour = now.hour
+            
+            sleep_start = DEFAULT_PET_SETTINGS.get('sleep_start_hour', 22)
+            sleep_end = DEFAULT_PET_SETTINGS.get('sleep_end_hour', 7)
+            
+            should_sleep = hour >= sleep_start or hour < sleep_end
+            
+            if should_sleep:
+                if not self.pet.is_sleeping:
+                    self.pet.start_sleep_animation()
+            else:
+                if self.pet.is_sleeping:
+                    self.pet.wake_up_animation()
+        except Exception as e:
+            print(f"检查宠物睡眠状态失败: {e}")
     
     def trigger_alarm(self, alarm):
         try:
@@ -1864,19 +1976,18 @@ class DesktopPetAlarmApp(App):
     
     def play_alarm_sound(self):
         try:
-            if (self.alarm_manager.settings.get('sound_enabled', True) and 
-                self.alarm_sound):
-                # 检查声音是否已经在播放
-                if not hasattr(self.alarm_sound, 'state') or self.alarm_sound.state != 'play':
-                    volume = self.alarm_manager.settings.get('volume', 0.8)
-                    self.alarm_sound.volume = volume
-                    self.alarm_sound.play()
+            if self.alarm_manager and self.alarm_manager.settings.get('sound_enabled', True) and self.alarm_sound:
+                if hasattr(self.alarm_sound, 'state') and self.alarm_sound.state == 'play':
+                    self.alarm_sound.stop()
+                volume = self.alarm_manager.settings.get('volume', 0.8)
+                self.alarm_sound.volume = volume
+                self.alarm_sound.play()
         except Exception as e:
             print(f"播放声音失败: {e}")
     
     def vibrate(self):
         try:
-            if self.alarm_manager.settings.get('vibrate', True):
+            if self.alarm_manager and self.alarm_manager.settings.get('vibrate', True):
                 if PLYER_AVAILABLE and vibrator:
                     vibrator.vibrate(1)
                 else:
