@@ -218,8 +218,10 @@ jobs:
         # 配置 SDK 目录结构
         echo "配置 SDK 目录结构..."
         echo "$(date): 配置 SDK 目录结构" >> $LOG_FILE
-        mkdir -p android-sdk/cmdline-tools
-        mv cmdline-tools android-sdk/cmdline-tools/latest
+        mkdir -p android-sdk/cmdline-tools/latest
+        rm -rf android-sdk/cmdline-tools/latest/*
+        cp -r cmdline-tools/* android-sdk/cmdline-tools/latest/
+        rm -rf cmdline-tools
         
         # 创建 symlink 以兼容 Buildozer
         mkdir -p android-sdk/tools/bin
