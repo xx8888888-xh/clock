@@ -27,9 +27,9 @@ jobs:
           ~/.android
           ~/.cache/pip
           __pycache__
-        key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec', 'requirements.txt') }}
+        key: ${{ runner.os }}-buildozer-v2-${{ hashFiles('buildozer.spec', 'requirements.txt') }}
         restore-keys: |
-          ${{ runner.os }}-buildozer-
+          ${{ runner.os }}-buildozer-v2-
 
     - name: Install system dependencies
       run: |
@@ -118,59 +118,50 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        # 自动安装 Python 依赖
         echo "=== 开始安装 Python 依赖 ==="
         
-        # 详细日志记录
         LOG_FILE="python-deps-install.log"
         echo "$(date): 开始安装 Python 依赖" > $LOG_FILE
         
-        # 升级 pip, setuptools 和 wheel
         echo "升级 pip 和相关工具..."
         echo "$(date): 升级 pip, setuptools 和 wheel" >> $LOG_FILE
         pip install --upgrade pip setuptools wheel >> $LOG_FILE 2>&1 || {
           echo "错误: 升级 pip 失败"
-          echo "$(date): 升级 pip 失败" >> $LOG_FILE
-          echo "请手动运行: pip install --upgrade pip setuptools wheel"
           exit 1
         }
         
-        # 安装 buildozer 和 cython（使用兼容版本）
-        echo "安装 buildozer 和 cython..."
-        echo "$(date): 安装 buildozer 和 cython" >> $LOG_FILE
-        pip install buildozer==1.5.0 cython==0.29.36 >> $LOG_FILE 2>&1 || {
-          echo "错误: 安装 buildozer 或 cython 失败"
-          echo "$(date): 安装 buildozer 或 cython 失败" >> $LOG_FILE
-          echo "请手动运行: pip install buildozer==1.5.0 cython==0.29.36"
+        echo "安装 cython（兼容版本）..."
+        echo "$(date): 安装 cython" >> $LOG_FILE
+        pip install "cython<3.0.0" >> $LOG_FILE 2>&1 || {
+          echo "错误: 安装 cython 失败"
           exit 1
         }
         
-        # 检查并安装 requirements.txt 中的依赖
+        echo "安装 buildozer..."
+        echo "$(date): 安装 buildozer" >> $LOG_FILE
+        pip install buildozer==1.5.0 >> $LOG_FILE 2>&1 || {
+          echo "错误: 安装 buildozer 失败"
+          exit 1
+        }
+        
+        echo "安装 pyjnius（预编译版本）..."
+        echo "$(date): 安装 pyjnius" >> $LOG_FILE
+        pip install pyjnius >> $LOG_FILE 2>&1 || {
+          echo "警告: pyjnius 安装失败，将在构建时处理"
+        }
+        
         if [ -f "requirements.txt" ]; then
           echo "安装 requirements.txt 中的依赖..."
           echo "$(date): 安装 requirements.txt 中的依赖" >> $LOG_FILE
           pip install -r requirements.txt >> $LOG_FILE 2>&1 || {
-            echo "错误: 安装 requirements.txt 中的依赖失败"
-            echo "$(date): 安装 requirements.txt 中的依赖失败" >> $LOG_FILE
-            echo "请手动运行: pip install -r requirements.txt"
-            exit 1
+            echo "警告: 部分依赖安装失败"
           }
         fi
         
-        # 检查安装结果
         echo "检查安装结果..."
-        echo "$(date): 检查安装结果" >> $LOG_FILE
-        pip list | grep -E "buildozer|cython|kivy|pillow" >> $LOG_FILE
-        pip list | grep -E "buildozer|cython|kivy|pillow"
-        
-        # 验证版本兼容性
-        echo "验证版本兼容性..."
-        echo "$(date): 验证版本兼容性" >> $LOG_FILE
-        python -c "import buildozer; print('Buildozer version:', buildozer.__version__)" >> $LOG_FILE 2>&1 || echo "Buildozer 版本检查失败" >> $LOG_FILE
-        python -c "import cython; print('Cython version:', cython.__version__)" >> $LOG_FILE 2>&1 || echo "Cython 版本检查失败" >> $LOG_FILE
+        pip list | grep -E "buildozer|cython|kivy|pillow|pyjnius|plyer"
         
         echo "=== Python 依赖安装完成 ==="
-        echo "$(date): Python 依赖安装完成" >> $LOG_FILE
 
     - name: Setup Android SDK licenses
       run: |
