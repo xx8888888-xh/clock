@@ -241,7 +241,8 @@ jobs:
         # 更新 SDK 管理器
         echo "更新 SDK 管理器..."
         echo "$(date): 更新 SDK 管理器" >> $LOG_FILE
-        yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --update >> $LOG_FILE 2>&1 || {
+        # 使用echo代替yes命令，避免管道错误
+        echo "y" | android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --update >> $LOG_FILE 2>&1 || {
           echo "错误: 更新 SDK 管理器失败"
           echo "$(date): 更新 SDK 管理器失败" >> $LOG_FILE
           exit 1
@@ -250,8 +251,9 @@ jobs:
         # 接受许可证并安装必要的组件
         echo "接受许可证并安装必要的组件..."
         echo "$(date): 接受许可证并安装组件" >> $LOG_FILE
-        yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses >> $LOG_FILE 2>&1
-        yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platform-tools" "platforms;android-33" "build-tools;33.0.0" >> $LOG_FILE 2>&1 || {
+        # 使用echo代替yes命令，避免管道错误
+        echo "y" | android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses >> $LOG_FILE 2>&1
+        echo "y" | android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platform-tools" "platforms;android-33" "build-tools;33.0.0" >> $LOG_FILE 2>&1 || {
           echo "错误: 安装 SDK 组件失败"
           echo "$(date): 安装 SDK 组件失败" >> $LOG_FILE
           exit 1
@@ -260,6 +262,8 @@ jobs:
         # 下载并安装 NDK
         echo "下载并安装 NDK..."
         echo "$(date): 下载并安装 NDK" >> $LOG_FILE
+        # 先删除已存在的NDK目录，避免解压时的交互式确认
+        rm -rf android-ndk-r25b 2>/dev/null
         wget -q https://dl.google.com/android/repository/android-ndk-r25b-linux.zip || {
           echo "错误: 下载 NDK 失败"
           echo "$(date): 下载 NDK 失败" >> $LOG_FILE
@@ -267,7 +271,8 @@ jobs:
           exit 1
         }
         
-        unzip -q android-ndk-r25b-linux.zip || {
+        # 使用-o参数自动覆盖已存在的文件
+        unzip -oq android-ndk-r25b-linux.zip || {
           echo "错误: 解压 NDK 失败"
           echo "$(date): 解压 NDK 失败" >> $LOG_FILE
           echo "请手动解压到 ~/.buildozer/android/platform/ 目录"
